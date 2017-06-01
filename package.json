@@ -1,16 +1,26 @@
 {
-  "name": "t1proxy",
+  "name": "@mediamath/t1proxy",
   "version": "1.0.0",
   "description": "Proxy to the T1 APIs using http-proxy-middleware",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "node ./test/index.js"
   },
   "keywords": [
     "proxy",
     "t1",
     "mediamath"
   ],
-  "author": "Matthew Conover",
-  "license": "UNLICENSED"
+  "author": "Matthew Conover <mconover@mediamath.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "http-proxy-middleware": "^0.17.4"
+  },
+  "devDependencies": {
+    "body-parser": "^1.17.2",
+    "connect": "^3.6.1",
+    "connect-logger": "0.0.1",
+    "serve-static": "^1.11.1"
+  }
 }
