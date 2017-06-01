@@ -20,5 +20,9 @@
   "devDependencies": {
     "body-parser": "^1.17.2",
     "connect": "^3.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/conoverm/t1proxy"
   }
 }
