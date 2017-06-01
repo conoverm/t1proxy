@@ -1,0 +1,16 @@
+{
+  "name": "t1proxy",
+  "version": "1.0.0",
+  "description": "Proxy to the T1 APIs using http-proxy-middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "proxy",
+    "t1",
+    "mediamath"
+  ],
+  "author": "Matthew Conover",
+  "license": "UNLICENSED"
+}
