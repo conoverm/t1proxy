@@ -19,8 +19,6 @@
   },
   "devDependencies": {
     "body-parser": "^1.17.2",
-    "connect": "^3.6.1",
-    "connect-logger": "0.0.1",
-    "serve-static": "^1.11.1"
+    "connect": "^3.6.1"
   }
 }
