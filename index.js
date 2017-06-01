@@ -32,24 +32,19 @@ const adamaProxy = proxy(['/api/v2.0', '/media/v1.0'], {
       proxyReq.method = 'POST';
     }
 
-    let body = creds;
-
-    body.user = process.env.T1USER;
-    body.password = process.env.T1PASSWORD;
-    body.api_key = process.env.T1APIKEY;
-
     delete req.body;
 
     // URI encode JSON object
-    body = Object.keys(body).map(function(key) {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(body[key]);
+    // this elegant solution found deep in http-proxy-middleware github issues
+    creds = Object.keys(creds).map(function(key) {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(creds[key]);
     }).join('&');
 
     // Update header
     proxyReq.setHeader('content-type', 'application/x-www-form-urlencoded');
-    proxyReq.setHeader('content-length', body.length);
+    proxyReq.setHeader('content-length', creds.length);
 
-    proxyReq.write(body);
+    proxyReq.write(creds);
     proxyReq.end();
   }
 });
