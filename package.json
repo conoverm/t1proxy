@@ -1,6 +1,6 @@
 {
   "name": "@mediamath/t1proxy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Proxy to the T1 APIs using http-proxy-middleware",
   "main": "index.js",
   "scripts": {
