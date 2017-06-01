@@ -12,7 +12,7 @@
     "mediamath"
   ],
   "author": "Matthew Conover <mconover@mediamath.com>",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "dependencies": {
     "dotenv": "^4.0.0",
     "http-proxy-middleware": "^0.17.4"
