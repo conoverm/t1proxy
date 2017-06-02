@@ -16,12 +16,12 @@
   "license": "Apache-2.0",
   "dependencies": {
     "body-parser": "^1.17.2",
-    "cross-env": "^5.0.0",
+    "dotenv": "^4.0.0",
     "http-proxy-middleware": "^0.17.4"
   },
   "devDependencies": {
-    "connect": "^3.6.1",
-    "dotenv": "^4.0.0"
+    "cross-env": "^5.0.0",
+    "connect": "^3.6.1"
   },
   "repository": {
     "type": "git",
