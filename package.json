@@ -1,6 +1,6 @@
 {
   "name": "@mediamath/t1proxy",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Proxy to the T1 APIs using http-proxy-middleware",
   "main": "index.js",
   "scripts": {
@@ -20,8 +20,8 @@
     "http-proxy-middleware": "^0.17.4"
   },
   "devDependencies": {
-    "cross-env": "^5.0.0",
-    "connect": "^3.6.1"
+    "connect": "^3.6.1",
+    "cross-env": "^5.0.0"
   },
   "repository": {
     "type": "git",
