@@ -21,8 +21,7 @@
   },
   "devDependencies": {
     "connect": "^3.6.1",
-    "cross-env": "^5.0.0",
-    "morgan": "^1.8.2"
+    "cross-env": "^5.0.0"
   },
   "repository": {
     "type": "git",
