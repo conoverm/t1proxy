@@ -1,25 +1,127 @@
-// connect app
-const connect = require('connect');
-const http = require('http');
-const path = require('path')
-const proxy = require('http-proxy-middleware');
-const url = require('url');
-const bodyParser = require('body-parser');
-const adamaProxy = require('../index.js');
+var test = require('tape')
+var mock = require('mock-require');
 
-const app = connect();
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json());
-app.use(adamaProxy);
+mock('http-proxy-middleware', './spy');
 
-// beanstalk default: 8081
-http.createServer(app).listen(8081);
-console.info('created test at: 8081');
-console.info('open a browser and go to: localhost:8081/api/v2.0/session');
-console.info('then to: localhost:8081/api/v2.0/login');
-console.info('then to: localhost:8081/api/v2.0/session');
-console.info('then to: localhost:8081/api/v2.0/campaigns');
-console.info('etc etc');
-console.info('if your .env file has a T1USER, T1PASSWORD, T1APIKEY everything should work');
+mock('dotenv', { config: () => {
+  return true;
+}});
+
+var adamaProxy = require('../index.js')
+
+var mockProxyReq = {
+  setHeader: (arg) => {
+    return true;
+  },
+  write: (arg) => {
+    return true;
+  },
+  end: (arg) => {
+    return true;
+  }
+}
+
+test('well-formed PROD request from login form', function (tape) {
+  let stubRequest = {
+    url: '/api/v2.0/login',
+    method: 'POST',
+    body: {
+      user: 'STEVE',
+      password: 'WINWOOD'
+    }
+  }
+
+  process.env.NODE_ENV = 'prod';
+
+  let proxyResult = adamaProxy(mockProxyReq, stubRequest);
+
+  tape.true(proxyResult, 'login request sent');
+
+  tape.end()
+})
+
+test('well-formed DEV request from login form', function (tape) {
+  let stubRequest = {
+    url: '/api/v2.0/login',
+    method: 'POST',
+    body: {
+      user: 'DARYL',
+      password: 'oates'
+    }
+  }
+
+  process.env.NODE_ENV = 'develop';
+
+  let proxyResult = adamaProxy(mockProxyReq, stubRequest);
+
+  tape.true(proxyResult, 'login request sent');
+
+  tape.end()
+})
+
+test('DEV request with local .env modifies login request',
+  function (tape) {
+  let stubRequest = {
+    url: '/api/v2.0/login',
+    method: 'GET'
+  }
+
+  process.env.NODE_ENV = 'develop';
+  process.env.T1USER = 'donfagen';
+  process.env.T1PASSWORD = 'e4gl3s'
+  process.env.T1APIKEY = 'STILL-FAKE-API-KEY';
+
+  let proxyResult = adamaProxy(mockProxyReq, stubRequest);
+
+  tape.true(proxyResult, 'login request sent');
+
+  tape.end()
+})
+
+test('DEV request with malformed .env sends request',
+  function (tape) {
+  let stubRequest = {
+    url: '/api/v2.0/login',
+    method: 'GET'
+  }
+
+  process.env.NODE_ENV = 'develop';
+  process.env.T1USER = 'THIS';
+  process.env.T1PASSWORD = null;
+  // process.env.T1APIKEY = 'Commented out on purpose!';
+
+  let proxyResult = adamaProxy(mockProxyReq, stubRequest);
+
+  tape.comment(`Bad request sent`);
+  tape.true(proxyResult, 'login request sent');
+
+  tape.end()
+})
+
+test('Request to non-login route returns immediately',
+  function (tape) {
+  let stubRequest = {
+    url: '/HENLEY',
+    method: 'GET'
+  }
+
+  let proxyResult = adamaProxy(mockProxyReq, stubRequest);
+
+  tape.true(proxyResult, 'no login');
+
+  tape.end()
+})
+
+test('POST request with no req.body returns immediately',
+  function (tape) {
+  let stubRequest = {
+    url: '/api/v2.0/login',
+    method: 'POST'
+  }
+
+  let proxyResult = adamaProxy(mockProxyReq, stubRequest);
+
+  tape.true(proxyResult, 'no POST data');
+
+  tape.end()
+})

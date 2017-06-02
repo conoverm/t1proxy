@@ -1,5 +1,9 @@
+/*
+  Requires server running this proxy to use body-parser
+  or another solution
+  that puts the POST data on req.body
+*/
 const proxy = require('http-proxy-middleware');
-const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -14,57 +18,68 @@ function credentials() {
   return creds;
 }
 
-const adamaProxy = proxy(['/api/v2.0', '/media/v1.0'], {
+function login(proxyReq, req) {
+  let creds = credentials();
+
+  if (req.url !== '/api/v2.0/login') {
+    return 'no login';
+  }
+
+  if (req.method === 'POST' && !req.body) {
+    console.error(`T1Proxy: Either no user or password in POST object`);
+    return 'no POST data';
+  }
+
+  if (req.method === 'POST' && req.body) {
+    // assume the request is from a login form
+    creds.user = req.body.user;
+    creds.password = req.body.password;
+  }
+
+  if (req.method === 'GET' && process.env.NODE_ENV.match(/dev/)) {
+    /***
+    local dev login route. Purely a convienence route for developers.
+    Running in NODE_ENV=dev and with a proper .env file will put an Adama
+    session cookie in the browser that makes the request to /api/v2.0/login
+    without the need of manually using a T1 Login Form.
+
+    This proxy will not fail the request if the credentials file is not
+    accurately setup. It will send the improper credentials to T1.
+    ***/
+    Object.keys(creds).forEach((key) => {
+      if (!creds[key] || creds[key].length == 0) {
+        console.error(`T1Proxy: T1 Credentials missing from '.env': ${key}`);
+      }
+    })
+
+    proxyReq.method = 'POST';
+
+  }
+
+  delete req.body;
+
+  // URI encode JSON object
+  // this elegant solution found deep in http-proxy-middleware github issues
+  creds = Object.keys(creds).map(function(key) {
+    return encodeURIComponent(key) + '=' + encodeURIComponent(creds[key]);
+  }).join('&');
+
+  // Update header
+  proxyReq.setHeader('content-type', 'application/x-www-form-urlencoded');
+  proxyReq.setHeader('content-length', creds.length);
+
+  proxyReq.write(creds);
+  proxyReq.end();
+  return 'login request sent';
+};
+
+const t1proxy = proxy(['/api/v2.0', '/media/v1.0'], {
   target: 'https://api.mediamath.com',
   changeOrigin: true,
   headers: {
     'x-local-proxy': 'proxied request',
   },
-  onProxyReq(proxyReq, req) {
-    let creds = credentials();
-
-    if (req.url !== '/api/v2.0/login') {
-      return;
-    }
-
-    if (req.method === 'POST') {
-      // assume the request is from a login form
-      creds.user = req.body.user;
-      creds.password = req.body.password;
-    }
-
-    if (req.method === 'GET' && process.env.NODE_ENV.match(/dev/)) {
-      // local dev login route.
-      // Running in NODE_ENV=dev and with a proper .env file will put an Adama
-      // session cookie in the browser that makes the request to /api/v2.0/login
-      // without the need of manually using a T1 Login Form
-      Object.keys(creds).forEach((key) => {
-        if (!creds[key] || creds[key].length == 0) {
-          console.error(`T1 Credentials missing from \`.env\`. Credentials are: T1USER, T1PASSWORD, T1APIKEY`);
-        }
-      })
-
-      proxyReq.method = 'POST';
-
-    } else {
-      return;
-    }
-
-    delete req.body;
-
-    // URI encode JSON object
-    // this elegant solution found deep in http-proxy-middleware github issues
-    creds = Object.keys(creds).map(function(key) {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(creds[key]);
-    }).join('&');
-
-    // Update header
-    proxyReq.setHeader('content-type', 'application/x-www-form-urlencoded');
-    proxyReq.setHeader('content-length', creds.length);
-
-    proxyReq.write(creds);
-    proxyReq.end();
-  }
+  onProxyReq: login
 });
 
-module.exports = adamaProxy;
+module.exports = t1proxy;
