@@ -3,13 +3,13 @@
   or another solution
   that puts the POST data on req.body
 */
-const proxy = require('http-proxy-middleware');
-const dotenv = require('dotenv');
+var proxy = require('http-proxy-middleware');
+var dotenv = require('dotenv');
 
 dotenv.config();
 
 function credentials() {
-  let creds = {};
+  var creds = {};
 
   creds.user = process.env.T1USER;
   creds.password = process.env.T1PASSWORD;
@@ -19,7 +19,7 @@ function credentials() {
 }
 
 function login(proxyReq, req) {
-  let creds = credentials();
+  var creds = credentials();
 
   if (req.url !== '/api/v2.0/login') {
     return 'no login';
@@ -73,7 +73,7 @@ function login(proxyReq, req) {
   return 'login request sent';
 };
 
-const t1proxy = proxy(['/api/v2.0', '/media/v1.0'], {
+var t1proxy = proxy(['/api/v2.0', '/media/v1.0'], {
   target: 'https://api.mediamath.com',
   changeOrigin: true,
   headers: {
