@@ -1,6 +1,6 @@
 {
   "name": "@mediamath/t1proxy",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Proxy to the T1 APIs using http-proxy-middleware",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,10 @@
     "mock-require": "^2.0.2",
     "tap-spec": "^4.1.1",
     "tape": "^4.8.0"
+  },
+  "engines": {
+    "node": ">=4.0.0",
+    "npm": ">=3.0.0"
   },
   "repository": {
     "type": "git",
