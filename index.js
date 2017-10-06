@@ -20,6 +20,7 @@ function credentials() {
 
 function login(proxyReq, req) {
   var creds = credentials();
+  process.env.NODE_ENV = process.env.NODE_ENV || '';
 
   if (req.url !== '/api/v2.0/login') {
     return 'no login';

@@ -125,3 +125,19 @@ test('POST request with no req.body returns immediately',
 
   tape.end()
 })
+
+test('lack of a NODE_ENV does not cause a fatal error',
+  function (tape) {
+  let stubRequest = {
+    url: '/api/v2.0/login',
+    method: 'GET'
+  }
+
+  process.env.NODE_ENV = undefined;
+
+  let proxyResult = adamaProxy(mockProxyReq, stubRequest)
+
+  tape.true(proxyResult, 'no POST data');
+
+  tape.end()
+})
