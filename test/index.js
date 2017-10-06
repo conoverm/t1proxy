@@ -35,7 +35,7 @@ test('well-formed PROD request from login form', function (tape) {
 
   let proxyResult = adamaProxy(mockProxyReq, stubRequest);
 
-  tape.true(proxyResult, 'login request sent');
+  tape.equal(proxyResult, 'login request sent', 'login request sent');
 
   tape.end()
 })
@@ -54,7 +54,7 @@ test('well-formed DEV request from login form', function (tape) {
 
   let proxyResult = adamaProxy(mockProxyReq, stubRequest);
 
-  tape.true(proxyResult, 'login request sent');
+  tape.equal(proxyResult, 'login request sent', 'login request sent');
 
   tape.end()
 })
@@ -73,7 +73,7 @@ test('DEV request with local .env modifies login request',
 
   let proxyResult = adamaProxy(mockProxyReq, stubRequest);
 
-  tape.true(proxyResult, 'login request sent');
+  tape.equal(proxyResult, 'login request sent', 'login request sent');
 
   tape.end()
 })
@@ -93,7 +93,7 @@ test('DEV request with malformed .env sends request',
   let proxyResult = adamaProxy(mockProxyReq, stubRequest);
 
   tape.comment(`Bad request sent`);
-  tape.true(proxyResult, 'login request sent');
+  tape.equal(proxyResult, 'login request sent', 'login request sent');
 
   tape.end()
 })
@@ -107,7 +107,7 @@ test('Request to non-login route returns immediately',
 
   let proxyResult = adamaProxy(mockProxyReq, stubRequest);
 
-  tape.true(proxyResult, 'no login');
+  tape.equal(proxyResult, 'no login', 'no login');
 
   tape.end()
 })
@@ -121,7 +121,7 @@ test('POST request with no req.body returns immediately',
 
   let proxyResult = adamaProxy(mockProxyReq, stubRequest);
 
-  tape.true(proxyResult, 'no POST data');
+  tape.equal(proxyResult, 'no POST data', 'no POST data');
 
   tape.end()
 })
@@ -137,7 +137,8 @@ test('lack of a NODE_ENV does not cause a fatal error',
 
   let proxyResult = adamaProxy(mockProxyReq, stubRequest)
 
-  tape.true(proxyResult, 'no POST data');
+  tape.equal(proxyResult, 'login request sent',
+    'login request sent');
 
   tape.end()
 })
