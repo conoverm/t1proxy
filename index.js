@@ -20,7 +20,7 @@ function credentials() {
 
 function login(proxyReq, req) {
   var creds = credentials();
-  process.env.NODE_ENV = process.env.NODE_ENV || '';
+  var NODE_ENV = process.env.NODE_ENV || '';
 
   if (req.url !== '/api/v2.0/login') {
     return 'no login';
@@ -37,7 +37,7 @@ function login(proxyReq, req) {
     creds.password = req.body.password;
   }
 
-  if (req.method === 'GET' && process.env.NODE_ENV.match(/dev/)) {
+  if (req.method === 'GET' && NODE_ENV.match(/dev/)) {
     /***
     local dev login route. Purely a convienence route for developers.
     Running in NODE_ENV=dev and with a proper .env file will put an Adama
